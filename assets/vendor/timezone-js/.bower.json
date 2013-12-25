@@ -16,6 +16,5 @@
   },
   "_source": "git://github.com/mde/timezone-js.git",
   "_target": "~0.4.7",
-  "_originalSource": "timezone-js",
-  "_direct": true
+  "_originalSource": "timezone-js"
 }
