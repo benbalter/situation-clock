@@ -17,10 +17,14 @@ body {
 }
 
 .time {
-  font-size:150px;
+  font-size:200px;
   color: #f00;
   background-color: #211;
   padding-top: 30px;
+}
+
+.epoch {
+  font-size: 100px;
 }
 
 .location {
