@@ -1,14 +1,20 @@
 # Situation Clock
 
-*LED-style situation room clock formatted for iPads*. [Live example](http://ben.balter.com/situation-clock/).
+*LED-style situation room clock formatted for iPads*. **[Live example](http://ben.balter.com/situation-clock/)**
 
-Forked from https://github.com/schacon/situation-clock, which states:
+Forked from [schacon/situation-clock](https://github.com/schacon/situation-clock), which states:
 
-> If you want to build a Situation Room, you'll need some sweet red clocks in the walls.  
+> If you want to build a Situation Room, you'll need some sweet red clocks in the walls... something like this:
 >
-> You could end up with something like this:
->
-> ![img_1399](https://f.cloud.github.com/assets/70/1504950/e0d8ca26-48c8-11e3-874f-5e0bbad613ed.jpg)
+> ![GitHub situation room](https://f.cloud.github.com/assets/70/1504950/e0d8ca26-48c8-11e3-874f-5e0bbad613ed.jpg)
+
+## Features
+
+* That red/green, LED-style text you'd expect
+* Displays current time and location name
+* It's a webpage, so it works in your tablet's browser
+* Hosted on GitHub Pages
+* [EPOCH/unix time format](http://en.wikipedia.org/wiki/Unix_time) support
 
 ## This modified version does a few things:
 
@@ -16,6 +22,7 @@ Forked from https://github.com/schacon/situation-clock, which states:
 * Ability to have multiple clocks per iPad
 * Jekyllification
 * CoffeeScript and Bower ALL THE THINGS
+* Tooling for easily running locally
 
 ## Usage
 
