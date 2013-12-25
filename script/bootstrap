@@ -1,4 +1,5 @@
 #! /bin/sh
 
 npm install
+bower update
 bundle install
