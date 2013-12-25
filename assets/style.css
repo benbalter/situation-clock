@@ -1,0 +1,33 @@
+body {
+  background-color:black;
+  text-align: center;
+  font-family:ds_digib;
+  font-stretch:extra-expanded;
+  margin: 50px;
+}
+
+@font-face {
+  font-family: ds_digib;
+  src: local(ds_digib), url('digital.ttf') format('opentype');
+}
+
+.clock {
+  display: none;
+  margin-bottom: 50px;
+}
+
+.time {
+  font-size:150px;
+  color: #f00;
+  background-color: #211;
+  padding-top: 30px;
+}
+
+.location {
+  margin-top: 25px;
+  font-size:75px;
+  color: #df2;
+  background-color: #202910;
+  padding-top: 10px;
+  text-transform: uppercase;
+}
