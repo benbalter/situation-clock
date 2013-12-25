@@ -1,3 +1,9 @@
+---
+clocks:
+  "Washington DC": America/New_York
+  "San Francisco": America/Los_Angeles
+  "EPOCH": EPOCH
+---
 <html>
 <head>
   <title>Situation Clock</title>
@@ -8,17 +14,11 @@
   <script src="assets/script.js"></script>
 </head>
 <body>
-  <div class="clock" data-timezone="America/New_York">
+{% for clock in page.clocks %}
+  <div class="clock {{ clock[0] | downcase | replace:" ","-" }}" data-timezone="{{ clock[1] }}">
     <div class="time"></div>
-    <div class="location">Washington D.C.</div>
+    <div class="location">{{ clock[0] }}</div>
   </div>
-  <div class="clock" data-timezone="America/Los_Angeles">
-    <div class="time"></div>
-    <div class="location">San Francisco</div>
-  </div>
-  <div class="clock" data-timezone="EPOCH">
-    <div class="time epoch"></div>
-    <div class="location">EPOCH</div>
-  </div>
+{% endfor %}
 </body>
 </html>
