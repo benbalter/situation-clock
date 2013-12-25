@@ -1,6 +1,6 @@
 # Situation Clock
 
-*LED-style situation room clock formatted for iPads*
+*LED-style situation room clock formatted for iPads*. [Live example](http://ben.balter.com/situation-clock/).
 
 Forked from https://github.com/schacon/situation-clock, which states:
 
