@@ -1,0 +1,5 @@
+#! /bin/sh
+set -e
+
+bower update
+script/vendor-timezones
