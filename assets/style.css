@@ -23,7 +23,7 @@ body {
   padding-top: 30px;
 }
 
-.epoch {
+.epoch .time {
   font-size: 125px;
   padding-top: 20px;
 }
