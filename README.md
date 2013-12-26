@@ -2,6 +2,8 @@
 
 *LED-style situation room clock formatted for iPads*. **[Live example](http://ben.balter.com/situation-clock/)**
 
+![situation clock screenshot](https://f.cloud.github.com/assets/282759/1809236/fd9213c8-6dc3-11e3-91f8-18274972e53c.png)
+
 Forked from [schacon/situation-clock](https://github.com/schacon/situation-clock), which states:
 
 > If you want to build a Situation Room, you'll need some sweet red clocks in the walls... something like this:
