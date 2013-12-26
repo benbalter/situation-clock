@@ -14,26 +14,26 @@ body {
 
 .clock {
   display: none;
-  margin-bottom: 75px;
+  margin-bottom: 7.5%;
 }
 
 .time {
   font-size: 200%;
   color: #f00;
   background-color: #211;
-  padding-top: 30px;
+  padding-top: 3%;
 }
 
 .epoch .time {
   font-size: 125%;
-  padding-top: 20px;
+  padding-top: 2%;
 }
 
 .location {
-  margin-top: 25px;
+  margin-top: 2.5%;
   font-size: 75%;
   color: #df2;
   background-color: #202910;
-  padding-top: 10px;
+  padding-top: 1%;
   text-transform: uppercase;
 }
