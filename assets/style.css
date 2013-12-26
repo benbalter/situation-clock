@@ -4,6 +4,7 @@ body {
   font-family:ds_digib;
   font-stretch:extra-expanded;
   margin: 50px;
+  font-size: 100px;
 }
 
 @font-face {
@@ -17,20 +18,20 @@ body {
 }
 
 .time {
-  font-size:200px;
+  font-size: 200%;
   color: #f00;
   background-color: #211;
   padding-top: 30px;
 }
 
 .epoch .time {
-  font-size: 125px;
+  font-size: 125%;
   padding-top: 20px;
 }
 
 .location {
   margin-top: 25px;
-  font-size:75px;
+  font-size: 75%;
   color: #df2;
   background-color: #202910;
   padding-top: 10px;

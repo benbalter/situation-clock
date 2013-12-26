@@ -45,9 +45,56 @@
       return this.time.html(time.toString());
     };
 
+    SituationClock.resize = function() {
+      var clocksHeight, fontSize, windowHeight, _results;
+      windowHeight = window.innerHeight;
+      clocksHeight = $(".clocks").height();
+      fontSize = parseInt($("body").css("font-size").replace("px", ''));
+      while (SituationClock.tooBig() && fontSize > 1) {
+        windowHeight = window.innerHeight;
+        clocksHeight = $(".clocks").height();
+        fontSize = parseInt($("body").css("font-size").replace("px", ''));
+        $("body").css("font-size", "" + (fontSize - 1) + "px");
+      }
+      _results = [];
+      while (SituationClock.tooSmall()) {
+        windowHeight = window.innerHeight;
+        clocksHeight = $(".clocks").height();
+        fontSize = parseInt($("body").css("font-size").replace("px", ''));
+        _results.push($("body").css("font-size", "" + (fontSize + 1) + "px"));
+      }
+      return _results;
+    };
+
+    SituationClock.tooBig = function() {
+      var clocksHeight, tooBig, windowHeight;
+      windowHeight = window.innerHeight;
+      clocksHeight = $(".clocks").height();
+      if (clocksHeight + 100 > windowHeight) {
+        return true;
+      }
+      tooBig = false;
+      $(".clock").each(function(i, clock) {
+        if ($(clock)[0].scrollWidth + 100 > window.innerWidth) {
+          return tooBig = true;
+        }
+      });
+      return tooBig;
+    };
+
+    SituationClock.tooSmall = function() {
+      var clocksHeight, windowHeight;
+      if (this.tooBig()) {
+        return false;
+      }
+      windowHeight = window.innerHeight;
+      clocksHeight = $(".clocks").height();
+      return clocksHeight + 150 < windowHeight;
+    };
+
     return SituationClock;
 
-  })();
+  }).call(this);
 
   $(function() {
     var clock, match;
@@ -64,8 +111,10 @@
     $(".clock").each(function(i, clock) {
       return new SituationClock(clock);
     });
+    $(window).resize(SituationClock.resize);
     return setTimeout(function() {
-      return $(".clock").fadeIn();
+      $(".clock").show();
+      return SituationClock.resize();
     }, 1000);
   });
 

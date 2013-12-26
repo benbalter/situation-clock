@@ -38,6 +38,40 @@ class SituationClock
   setTime: (time) ->
     @time.html time.toString()
 
+  @resize: =>
+    windowHeight = window.innerHeight
+    clocksHeight = $(".clocks").height()
+    fontSize = parseInt $("body").css("font-size").replace( "px", '')
+
+    while @tooBig() && fontSize > 1
+      windowHeight = window.innerHeight
+      clocksHeight = $(".clocks").height()
+      fontSize = parseInt $("body").css("font-size").replace( "px", '')
+      $("body").css "font-size", "#{fontSize - 1}px"
+
+    while @tooSmall()
+      windowHeight = window.innerHeight
+      clocksHeight = $(".clocks").height()
+      fontSize = parseInt $("body").css("font-size").replace( "px", '')
+      $("body").css "font-size", "#{fontSize + 1}px"
+
+  @tooBig: ->
+    windowHeight = window.innerHeight
+    clocksHeight = $(".clocks").height()
+    return true if clocksHeight + 100 > windowHeight
+
+    tooBig = false
+    $(".clock").each (i, clock) ->
+      tooBig = true if $(clock)[0].scrollWidth + 100 > window.innerWidth
+
+    tooBig
+
+  @tooSmall: ->
+    return false if @tooBig()
+    windowHeight = window.innerHeight
+    clocksHeight = $(".clocks").height()
+    clocksHeight + 150 < windowHeight
+
 $ ->
   # Init timezone support
   timezoneJS.timezone.zoneFileBasePath = './tz'
@@ -54,7 +88,11 @@ $ ->
   $(".clock").each (i,clock) ->
     new SituationClock clock
 
+  # Bind resize event
+  $(window).resize SituationClock.resize
+
   # Fade in after initial time is set
   setTimeout ->
-    $(".clock").fadeIn()
+    $(".clock").show()
+    SituationClock.resize()
   , 1000
