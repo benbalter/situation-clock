@@ -1,4 +1,5 @@
 #! /bin/sh
 set -e
 
+script/branding
 bundle exec foreman start
