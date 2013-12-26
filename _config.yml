@@ -1,0 +1,9 @@
+exclude:
+  - "*.coffee"
+  - "*.md"
+  - script
+  - Gemfile
+  - Gemfile.lock
+  - Procfile
+  - "*.json"
+  - node_modules
