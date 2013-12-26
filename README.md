@@ -23,6 +23,7 @@ Forked from [schacon/situation-clock](https://github.com/schacon/situation-clock
 * Full, native timezone support
 * Ability to have multiple clocks per iPad
 * Clock(s) dynamically resize to fill screen
+* App-ified so it can be saved to the iOS home screen
 * Jekyllification
 * CoffeeScript and Bower ALL THE THINGS
 * Tooling for easily running locally
