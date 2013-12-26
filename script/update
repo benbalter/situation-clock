@@ -3,3 +3,4 @@ set -e
 
 bower update
 script/vendor-timezones
+./node_modules/.bin/coffee -c assets/script.coffee
