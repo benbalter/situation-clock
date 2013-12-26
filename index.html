@@ -14,11 +14,13 @@ clocks:
   <script src="assets/script.js"></script>
 </head>
 <body>
+<div class="clocks">
 {% for clock in page.clocks %}
   <div class="clock {{ clock[0] | downcase | replace:" ","-" }}" data-timezone="{{ clock[1] }}">
     <div class="time"></div>
     <div class="location">{{ clock[0] }}</div>
   </div>
 {% endfor %}
+</div>
 </body>
 </html>

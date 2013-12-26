@@ -19,7 +19,11 @@
 
     SituationClock.prototype.updateTime = function() {
       var h, m, time;
-      time = new timezoneJS.Date(new Date, this.timezone);
+      if (this.timezone) {
+        time = new timezoneJS.Date(new Date, this.timezone);
+      } else {
+        time = new Date;
+      }
       h = this.leadingZero(time.getHours());
       m = this.leadingZero(time.getMinutes());
       return this.setTime("" + h + ":" + m);
@@ -46,10 +50,17 @@
   })();
 
   $(function() {
+    var clock, match;
     timezoneJS.timezone.zoneFileBasePath = './tz';
     timezoneJS.timezone.init({
       "async": false
     });
+    if (match = location.search.match(/\?location=(.*)$/)) {
+      clock = $("<div class=\"clock\"></div>");
+      clock.append("<div class=\"time\"></div>");
+      clock.append("<div class=\"location\">" + match[1] + "</div>");
+      $('.clocks').append(clock);
+    }
     $(".clock").each(function(i, clock) {
       return new SituationClock(clock);
     });

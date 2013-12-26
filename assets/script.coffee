@@ -12,7 +12,13 @@ class SituationClock
 
   # Updates the time for the current timezone
   updateTime: =>
-    time = new timezoneJS.Date new Date, @timezone
+
+    # Default to system if no timezone is given
+    if @timezone
+      time = new timezoneJS.Date new Date, @timezone
+    else
+      time = new Date
+
     h = @leadingZero time.getHours()
     m = @leadingZero time.getMinutes()
     @setTime "#{h}:#{m}"
@@ -36,6 +42,13 @@ $ ->
   # Init timezone support
   timezoneJS.timezone.zoneFileBasePath = './tz'
   timezoneJS.timezone.init "async": false
+
+  # Legacy ?location= support
+  if match = location.search.match /\?location=(.*)$/
+    clock = $ "<div class=\"clock\"></div>"
+    clock.append "<div class=\"time\"></div>"
+    clock.append "<div class=\"location\">#{match[1]}</div>"
+    $('.clocks').append clock
 
   # Init clocks
   $(".clock").each (i,clock) ->
