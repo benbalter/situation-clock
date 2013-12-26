@@ -22,6 +22,7 @@ Forked from [schacon/situation-clock](https://github.com/schacon/situation-clock
 
 * Full, native timezone support
 * Ability to have multiple clocks per iPad
+* Clock(s) dynamically resize to fill screen
 * Jekyllification
 * CoffeeScript and Bower ALL THE THINGS
 * Tooling for easily running locally
@@ -35,6 +36,8 @@ Forked from [schacon/situation-clock](https://github.com/schacon/situation-clock
 5. Give your situation clock a name
 6. Open the newly created shortcut
 7. (optional) use Velcro or similar to mount to the wall
+
+*Note: You can also pass a URL parameter of `location`, e.g., `?location="ZULU"` to set a clock via the URL. The clock will default to the system timezone.*
 
 ## Adding/modifying a clock
 
