@@ -1,3 +1,18 @@
+
+var files = [ 'africa'
+, 'antarctica'
+, 'asia'
+, 'australasia'
+, 'backward'
+, 'etcetera'
+, 'europe'
+, 'factory'
+, 'northamerica'
+, 'pacificnew'
+, 'southamerica'
+, 'systemv'
+];
+
 (function () {
 
   var fs = require('fs')
@@ -18,7 +33,7 @@
     , _tz = timezoneJS.timezone;
 
     _tz.loadingScheme = _tz.loadingSchemes.MANUAL_LOAD;
-    _tz.zoneFiles = fs.readdirSync(baseDir);
+    _tz.zoneFiles = files;
 
     for (var i = 0; i < _tz.zoneFiles.length; i++) {
       var zoneFile = _tz.zoneFiles[i];

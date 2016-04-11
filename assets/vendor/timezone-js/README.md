@@ -45,9 +45,11 @@ Then you'll need to make the files available to the `timezoneJS.timezone` code, 
 Put your directory of Olson files somewhere under your Web server root, and point `timezoneJS.timezone.zoneFileBasePath` to it. Then call the init function. Your code will look something like this:
 
 	timezoneJS.timezone.zoneFileBasePath = '/tz';
-	timezoneJS.timezone.init();
+	timezoneJS.timezone.init({ callback: cb });
 
 If you use `timezoneJS.Date` with `Fleegix.js`, `jQuery` or `jQuery`-compatible libraries (like `Zepto.js`), there's nothing else you need to do -- timezones for North America will be loaded and parsed on initial page load, and others will be downloaded and parsed on-the-fly, as needed. If you want to use this code with some other JavaScript toolkit, you'll need to overwrite your own transport method by setting `timezoneJS.timezone.transport = someFunction` method. Take a look at `test-utils.js` in `spec` for an example.
+
+**NOTE**: By default `init()` is async so you'll need to specify a callback function such as `init({ callback: cb })`. Otherwise set `init({ async: false })` to turn off async.
 
 ## Usage
 
@@ -64,7 +66,7 @@ In the following cases the date is assumed to be a date in timezone `tz` or a lo
     timezoneJS.Date(year, mon, day, [hour], [min], [second], [tz])
     timezoneJS.Date(dt_str, [tz])
 
-`dt_str_tz` is a date string containing no timezone information.
+`dt_str` is a date string containing no timezone information.
 
 ### Examples
 
@@ -82,7 +84,7 @@ Naturally enough, the `getTimezoneOffset` method returns the timezone offset in 
 	var dt = new timezoneJS.Date(2006, 9, 29, 2, 0, 'America/Los_Angeles');
 	dt.getTimezoneOffset(); => 480
 
-Just as you'd expect, the getTime method gives you the UTC timestamp for the given date:
+Just as you'd expect, the `getTime` method gives you the UTC timestamp for the given date:
 
 	var dtA = new timezoneJS.Date(2007, 9, 31, 10, 30, 'America/Los_Angeles');
 	var dtB = new timezoneJS.Date(2007, 9, 31, 12, 30, 'America/Chicago');
@@ -99,10 +101,15 @@ You can set (or reset) the timezone using the `setTimezone` method:
 	dt.setTimezone('Pacific/Honolulu');
 	dt.getTimezoneOffset(); => 600
 
-The getTimezone method tells you what timezone a `timezoneJS.Date` is set to.
+The `getTimezone` method tells you what timezone a `timezoneJS.Date` is set to:
 
 	var dt = new timezoneJS.Date('12/27/2010', 'Asia/Tokyo');
 	dt.getTimezone(); => 'Asia/Tokyo'
+
+You can use `getTimezoneAbbreviation` method to get timezone abbreviation:
+
+	var dt = new timezoneJS.Date('10/31/2008', 'America/New_York');
+	dt.getTimezoneAbbreviation(); => 'EDT'
 
 ## Customizing
 
@@ -207,3 +214,4 @@ Contributions:
 - Dov. B Katz (dov.katz@morganstanley.com)
 - Peter Bergström (pbergstr@mac.com)
 - Long Ho (@longlho)
+- Eugeny Loy (eugeny.loy@gmail.com)

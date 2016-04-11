@@ -39,7 +39,7 @@ namespace('test', function () {
     if (!existsSync('lib/tz')) {
       fail('No timezone data. Please run "jake test:init".');
     }
-    jake.exec(['jasmine-node spec'], function () {
+    jake.exec(['./node_modules/jasmine-node/bin/jasmine-node spec'], function () {
       complete();
     }, {printStdout: true});
 
@@ -75,13 +75,20 @@ namespace('doc', function () {
 desc('Generates docs.');
 task('doc', ['doc:generate']);
 
-var p = new jake.NpmPublishTask('timezone-js', [
-  'Jakefile'
-, 'README.md'
-, 'package.json'
-, 'spec/*'
-, 'src/*'
-]);
+publishTask('timezone-js',
+    {versionFiles: ['package.json', 'bower.json']} , function () {
+  this.packageFiles.include([
+    'Jakefile'
+  , 'README.md'
+  , 'package.json'
+  , 'spec/*'
+  , 'src/*'
+  ]);
+});
 
-jake.Task['npm:definePackage'].invoke();
-
+jake.Task['publish:updateVersionFiles'].on('complete', function (version) {
+  var code = fs.readFileSync('./src/date.js').toString();
+  code = code.replace(/timezoneJS.VERSION = '.+'/m,
+      "timezoneJS.VERSION = '" + version  + "'");
+  fs.writeFileSync('./src/date.js', code);
+});
