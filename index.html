@@ -4,24 +4,25 @@ clocks:
   "San Francisco": America/Los_Angeles
   "EPOCH": EPOCH
 ---
+
 <html>
-<head>
-  <title>Situation Clock</title>
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <link rel="stylesheet" type="text/css" href="assets/style.css">
-  <script src="assets/vendor/jquery/jquery.min.js"></script>
-  <script src="assets/vendor/timezone-js/src/date.js"></script>
-  <script src="assets/script.js"></script>
-</head>
-<body>
-<div class="status"></div>
-<div class="clocks">
-{% for clock in page.clocks %}
-  <div class="clock {{ clock[0] | downcase | replace:" ","-" }}" data-timezone="{{ clock[1] }}">
-    <div class="time"></div>
-    <div class="location">{{ clock[0] }}</div>
-  </div>
-{% endfor %}
-</div>
-</body>
+  <head>
+    <title>Situation Clock</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="stylesheet" type="text/css" href="{{ "assets/style.css?v=" | append: site.github.build_revision | relative_url }}">
+    <script src="{{ "assets/vendor/jquery/jquery.min.js" | relative_url }}"></script>
+    <script src="{{ "assets/vendor/timezone-js/src/date.js" | relative_url }}"></script>
+    <script src="{{ "assets/script.js?v=" | append: site.github.build_revision | relative_url }}"></script>
+  </head>
+  <body>
+    <div class="status"></div>
+    <div class="clocks">
+      {% for clock in page.clocks %}
+        <div class="clock {{ clock[0] | downcase | replace:" ","-" }}" data-timezone="{{ clock[1] }}">
+          <div class="time"></div>
+          <div class="location">{{ clock[0] }}</div>
+        </div>
+      {% endfor %}
+    </div>
+  </body>
 </html>
