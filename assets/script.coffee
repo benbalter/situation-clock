@@ -75,6 +75,13 @@ class SituationClock
     clocksHeight = $(".clocks").height()
     clocksHeight + 150 < windowHeight
 
+  @checkStatus: ->
+    $.getJSON "https://status.github.com/api/last-message.json?callback=?", (data) ->
+      if data["status"] == "good"
+        $(".status").slideUp().removeClass("minor").removeClass("major").empty()
+      else
+        $(".status").addClass(data["status"]).html(data["body"]).slideDown()
+
 $ ->
   # Init timezone support
   timezoneJS.timezone.zoneFileBasePath = './tz'
@@ -99,3 +106,5 @@ $ ->
     $(".clock").show()
     SituationClock.resize()
   , 1000
+
+  setInterval SituationClock.checkStatus, 60000

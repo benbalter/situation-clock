@@ -40,3 +40,25 @@ body {
   padding-top: 1%;
   text-transform: uppercase;
 }
+
+.status {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: none;
+  font-size: 25px;
+  color: black;
+  text-align: center;
+  font-family: sans-serif;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.status.minor {
+  background: yellow;
+}
+
+.status.major {
+  background: red;
+}
