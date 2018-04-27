@@ -2,3 +2,4 @@ _site
 node_modules
 assets/vendor/*/spec
 Gemfile.lock
+package-lock.json
