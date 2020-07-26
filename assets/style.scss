@@ -1,11 +1,11 @@
----
----
+--- 
+--- 
 
 body {
-  background-color:black;
+  background-color: black;
   text-align: center;
-  font-family:ds_digib;
-  font-stretch:extra-expanded;
+  font-family: ds_digib;
+  font-stretch: extra-expanded;
   margin: 50px;
   font-size: 100px;
 }
@@ -60,5 +60,9 @@ body {
 }
 
 .status.major {
+  background: orange;
+}
+
+.status.critical {
   background: red;
 }

@@ -2,4 +2,5 @@
 set -e
 
 script/branding
+npm run build
 bundle exec jekyll serve --watch
