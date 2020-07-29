@@ -6,6 +6,21 @@ interface Status {
   description: string;
 }
 
+interface StatusSummary {
+  status: Status;
+  incidents: Incident[];
+}
+
+interface IncidentUpdate {
+  body: string;
+  created_at: string;
+  status: string;
+}
+
+interface Incident {
+  incident_updates: IncidentUpdate[];
+}
+
 class SituationClock {
   clock: JQuery<HTMLElement>;
   timezone: string;
@@ -106,7 +121,7 @@ class SituationClockResizer {
 
 class GitHubStatus {
   id = "kctbh9vrtdwd";
-  url = `https://${this.id}.statuspage.io/api/v2/status.json`;
+  url = `https://${this.id}.statuspage.io/api/v2/summary.json`;
   div = $(".status");
 
   constructor() {
@@ -115,24 +130,30 @@ class GitHubStatus {
   }
 
   checkStatus() {
-    this.getStatus(this.setStatus.bind(this));
+    this.getSummary(this.setStatus.bind(this));
   }
 
-  getStatus(callback: (status: Status) => void) {
-    $.getJSON(this.url, (data) => {
-      callback(data["status"]);
-    });
+  getSummary(callback: (statusSummary: StatusSummary) => void) {
+    $.getJSON(this.url, callback);
   }
 
   clearStatus() {
     this.div.slideUp().removeClass().addClass("status").empty();
   }
 
-  setStatus(status: Status) {
+  setStatus(statusSummary: StatusSummary) {
+    const status = statusSummary.status;
+
     if (status.indicator == "none") {
       this.clearStatus();
     } else {
-      this.div.addClass(status.indicator).text(status.description).slideDown();
+      const updates = statusSummary.incidents.map((incident) => {
+        const latestUpdate = incident.incident_updates[0];
+        const timestamp = moment(latestUpdate.created_at).fromNow();
+        return `<p>${timestamp}: <strong>${latestUpdate.status}</strong> - ${latestUpdate.body}</p>`;
+      });
+
+      this.div.addClass(status.indicator).html(updates.join("\n")).slideDown();
     }
   }
 }
