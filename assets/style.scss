@@ -1,4 +1,4 @@
---- 
+---
 --- 
 
 body {
@@ -21,20 +21,20 @@ body {
 }
 
 .time {
-  font-size: 200%;
+  font-size: 2em;
   color: #f00;
   background-color: #211;
   padding-top: 3%;
 }
 
 .epoch .time {
-  font-size: 125%;
+  font-size: 1.25em;
   padding-top: 2%;
 }
 
 .location {
   margin-top: 2.5%;
-  font-size: 75%;
+  font-size: .75em;
   color: #df2;
   background-color: #202910;
   padding-top: 1%;
@@ -47,7 +47,7 @@ body {
   left: 0;
   width: 100%;
   display: none;
-  font-size: 25px;
+  font-size: .2em;
   color: black;
   text-align: center;
   font-family: sans-serif;
