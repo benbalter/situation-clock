@@ -67,7 +67,7 @@ class SituationClockResizer {
     $(window).resize(this.resize.bind(this));
 
     setTimeout(() => {
-      $(".clock").show();
+      $(".clock").removeClass("d-none");
       this.resize();
     }, 1000);
   }
@@ -138,7 +138,7 @@ class GitHubStatus {
   }
 
   clearStatus() {
-    this.div.slideUp().removeClass().addClass("status").empty();
+    this.div.slideUp().removeClass().addClass("status fixed-top").empty();
   }
 
   setStatus(statusSummary: StatusSummary) {

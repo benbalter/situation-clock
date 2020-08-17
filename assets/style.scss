@@ -1,56 +1,46 @@
 ---
---- 
+---
 
 body {
   background-color: black;
-  text-align: center;
-  font-family: ds_digib;
-  font-stretch: extra-expanded;
   margin: 50px;
   font-size: 100px;
 }
 
 @font-face {
-  font-family: ds_digib;
-  src: local(ds_digib), url('digital.ttf') format('opentype');
+  font-family: "Ericsson GA628";
+  src: url("EricssonGA628.woff2") format("woff2"),
+    url("EricssonGA628.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
 }
 
-.clock {
-  display: none;
-  margin-bottom: 7.5%;
+.clocks {
+  font-family: "Ericsson GA628";
+  font-stretch: extra-expanded;
 }
 
 .time {
   font-size: 2em;
   color: #f00;
   background-color: #211;
-  padding-top: 3%;
 }
 
 .epoch .time {
   font-size: 1.25em;
-  padding-top: 2%;
 }
 
 .location {
-  margin-top: 2.5%;
-  font-size: .75em;
+  font-size: 0.75em;
   color: #df2;
   background-color: #202910;
-  padding-top: 1%;
   text-transform: uppercase;
 }
 
 .status {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  display: none;
-  font-size: .2em;
+  font-size: 0.2em;
   color: black;
-  text-align: center;
-  font-family: sans-serif;
 
   p {
     padding: 10px;

@@ -5,23 +5,30 @@ clocks:
   "EPOCH": EPOCH
 ---
 
-<html>
+<!doctype html>
+<html lang="en">
 
 <head>
   <title>Situation Clock</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
   <link rel="stylesheet" type="text/css"
     href="{{ "assets/style.css?v=" | append: site.github.build_revision | relative_url }}">
   <script src="{{ "assets/script.js?v=" | append: site.github.build_revision | relative_url }}"></script>
 </head>
 
-<body>
-  <div class="status"></div>
+<body class="text-center">
+  <div class="status fixed-top d-none"></div>
   <div class="clocks">
     {% for clock in page.clocks %}
-    <div class="clock {{ clock[0] | downcase | replace:" ","-" }}" data-timezone="{{ clock[1] }}">
-      <div class="time"></div>
-      <div class="location">{{ clock[0] }}</div>
+    <div class="clock {{ clock[0] | downcase | replace:" ","-" }} mb-5 d-none" data-timezone="{{ clock[1] }}">
+      <div class="time pt-2"></div>
+      <div class="location mt-1 pt-2">{{ clock[0] }}</div>
     </div>
     {% endfor %}
   </div>
