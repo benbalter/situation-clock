@@ -51,8 +51,10 @@ body {
   color: black;
   text-align: center;
   font-family: sans-serif;
-  padding-top: 10px;
-  padding-bottom: 10px;
+
+  p {
+    padding: 10px;
+  }
 }
 
 .status.minor {

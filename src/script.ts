@@ -101,12 +101,12 @@ class SituationClockResizer {
   }
 
   tooBig(): boolean {
-    if (this.clocksHeight() + 100 > this.windowHeight()) {
+    if (this.clocksHeight() > this.windowHeight()) {
       return true;
     }
 
     return Array.from($(".clock")).some((clock) => {
-      clock.scrollWidth + 100 > window.innerWidth;
+      clock.scrollWidth > window.innerWidth;
     });
   }
 
