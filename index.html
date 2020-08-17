@@ -13,6 +13,7 @@ clocks:
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="apple-mobile-web-app-status-bar-style" content="#000000">
 
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
     integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
@@ -22,11 +23,11 @@ clocks:
   <script src="{{ "assets/script.js?v=" | append: site.github.build_revision | relative_url }}"></script>
 </head>
 
-<body class="text-center">
+<body class="text-center m-5">
   <div class="status fixed-top d-none"></div>
   <div class="clocks">
     {% for clock in page.clocks %}
-    <div class="clock {{ clock[0] | downcase | replace:" ","-" }} mb-5 d-none" data-timezone="{{ clock[1] }}">
+    <div class="clock {{ clock[0] | downcase | replace:" ","-" }} mb-4 d-none" data-timezone="{{ clock[1] }}">
       <div class="time pt-2"></div>
       <div class="location mt-1 pt-2">{{ clock[0] }}</div>
     </div>
