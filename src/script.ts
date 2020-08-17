@@ -115,7 +115,7 @@ class SituationClockResizer {
       return false;
     }
 
-    return this.clocksHeight() + 150 < this.windowHeight();
+    return this.clocksHeight() < this.windowHeight();
   }
 }
 
