@@ -1,0 +1,41 @@
+name: Build
+
+on:
+  push:
+    branches: ["main"]
+    paths: 
+      - "src/**"
+      - "*.js"
+      - "*.json"
+      - ".github/workflows/build-and-deploy.yml"
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 19
+          cache: 'npm'
+      
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.0
+          bundler-cache: true
+
+      - run: npm install
+
+      - run: bundle install
+
+      - run: npm run build
