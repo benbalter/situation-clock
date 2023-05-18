@@ -2,14 +2,16 @@ name: Build
 
 on:
   push:
-    branches: ["main"]
+    branches: ["gh-pages"]
     paths: 
       - "src/**"
       - "*.js"
       - "*.json"
-      - ".github/workflows/build-and-deploy.yml"
+      - ".github/workflows/build.yml"
 
   workflow_dispatch:
+  pull_request:
+    branches: ["gh-pages"]
 
 permissions:
   contents: read
