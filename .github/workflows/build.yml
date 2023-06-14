@@ -28,7 +28,7 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          node-version: 19
+          node-version: 16
       
       - uses: ruby/setup-ruby@v1
         with:
