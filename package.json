@@ -22,7 +22,7 @@
   "dependencies": {
     "@types/moment-timezone": "0.5.13",
     "jquery": "3.5.1",
-    "moment": "2.27.0",
+    "moment": "2.29.4",
     "moment-timezone": "0.5.31"
   },
   "devDependencies": {
