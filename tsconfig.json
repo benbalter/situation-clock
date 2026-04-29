@@ -1,9 +1,14 @@
 {
   "compilerOptions": {
-    //"rootDir": "src",
+    "target": "ES2022",
+    "module": "ES2022",
+    "moduleResolution": "bundler",
     "outDir": "dist",
-    "typeRoots": ["node_modules/@types"],
-    "lib": ["dom", "es2017"],
+    "lib": ["DOM", "ES2022"],
     "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true
   },
+  "include": ["src"]
 }

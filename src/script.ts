@@ -1,6 +1,3 @@
-import * as $ from "jquery";
-import * as moment from "moment-timezone";
-
 interface Status {
   indicator: string;
   description: string;
@@ -22,52 +19,51 @@ interface Incident {
 }
 
 class SituationClock {
-  clock: JQuery<HTMLElement>;
+  clock: HTMLElement;
   timezone: string;
-  time: JQuery<HTMLElement>;
+  time: HTMLElement;
+  formatter?: Intl.DateTimeFormat;
 
   constructor(clock: HTMLElement) {
-    this.clock = $(clock);
-    this.timezone = this.clock.data("timezone");
-    this.time = this.clock.find(".time");
+    this.clock = clock;
+    this.timezone = clock.dataset.timezone ?? "";
+    this.time = clock.querySelector(".time") as HTMLElement;
 
     if (this.timezone === "EPOCH") {
-      setInterval(this.updateTimeEpoch.bind(this), 1000);
+      setInterval(() => this.updateTimeEpoch(), 1000);
     } else {
-      setInterval(this.updateTime.bind(this), 1000);
+      this.formatter = new Intl.DateTimeFormat("en-GB", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hourCycle: "h23",
+        timeZone: this.timezone || undefined,
+      });
+      setInterval(() => this.updateTime(), 1000);
     }
   }
 
   updateTime() {
-    let time = moment();
-
-    if (this.timezone) {
-      time = time.tz(this.timezone);
-    }
-
-    this.setTime(time.format("HH:mm"));
+    this.setTime(this.formatter!.format(new Date()));
   }
 
   updateTimeEpoch() {
-    const time = Math.round(new Date().valueOf() / 1000);
+    const time = Math.floor(Date.now() / 1000);
     this.setTime(time.toString());
   }
 
-  leadingZero(num: number): string {
-    return num.toString().padStart(2, "0");
-  }
-
   setTime(time: string) {
-    this.time.html(time);
+    this.time.textContent = time;
   }
 }
 
 class SituationClockResizer {
   constructor() {
-    $(window).resize(this.resize.bind(this));
+    window.addEventListener("resize", () => this.resize());
 
     setTimeout(() => {
-      $(".clock").removeClass("d-none");
+      document.querySelectorAll(".clock").forEach((el) => {
+        el.classList.remove("hidden");
+      });
       this.resize();
     }, 1000);
   }
@@ -77,26 +73,26 @@ class SituationClockResizer {
   }
 
   clocksHeight(): number {
-    const height = $(".clocks").height();
-
-    if (height === undefined) {
-      return 0;
-    } else {
-      return height;
-    }
+    const clocks = document.querySelector(".clocks");
+    return clocks?.clientHeight ?? 0;
   }
 
   fontSize(): number {
-    return parseInt($("body").css("font-size").replace("px", ""));
+    return parseFloat(getComputedStyle(document.body).fontSize);
   }
 
   resize() {
     while (this.tooBig() && this.fontSize() > 1) {
-      $("body").css("font-size", `${this.fontSize() - 1}px`);
+      document.body.style.fontSize = `${this.fontSize() - 1}px`;
     }
 
     while (this.tooSmall()) {
-      $("body").css("font-size", `${this.fontSize() + 1}px`);
+      document.body.style.fontSize = `${this.fontSize() + 1}px`;
+    }
+
+    // Step back if the grow loop overshot
+    if (this.tooBig() && this.fontSize() > 1) {
+      document.body.style.fontSize = `${this.fontSize() - 1}px`;
     }
   }
 
@@ -105,9 +101,9 @@ class SituationClockResizer {
       return true;
     }
 
-    return Array.from($(".clock")).some((clock) => {
-      clock.scrollWidth > window.innerWidth;
-    });
+    return Array.from(document.querySelectorAll(".clock")).some(
+      (clock) => clock.scrollWidth > window.innerWidth
+    );
   }
 
   tooSmall(): boolean {
@@ -119,58 +115,108 @@ class SituationClockResizer {
   }
 }
 
+function relativeTime(dateString: string): string {
+  const now = Date.now();
+  const then = new Date(dateString).getTime();
+  const diffSeconds = Math.round((now - then) / 1000);
+
+  const units: [Intl.RelativeTimeFormatUnit, number][] = [
+    ["year", 60 * 60 * 24 * 365],
+    ["month", 60 * 60 * 24 * 30],
+    ["day", 60 * 60 * 24],
+    ["hour", 60 * 60],
+    ["minute", 60],
+    ["second", 1],
+  ];
+
+  const formatter = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
+
+  for (const [unit, secondsInUnit] of units) {
+    if (Math.abs(diffSeconds) >= secondsInUnit) {
+      const value = Math.round(-diffSeconds / secondsInUnit);
+      return formatter.format(value, unit);
+    }
+  }
+
+  return formatter.format(0, "second");
+}
+
 class GitHubStatus {
   id = "kctbh9vrtdwd";
   url = `https://${this.id}.statuspage.io/api/v2/summary.json`;
-  div = $(".status");
+  div = document.querySelector(".status") as HTMLElement;
 
   constructor() {
-    setInterval(this.checkStatus.bind(this), 60000);
+    setInterval(() => this.checkStatus(), 60000);
     this.checkStatus();
   }
 
-  checkStatus() {
-    this.getSummary(this.setStatus.bind(this));
-  }
-
-  getSummary(callback: (statusSummary: StatusSummary) => void) {
-    $.getJSON(this.url, callback);
+  async checkStatus() {
+    try {
+      const response = await fetch(this.url);
+      if (!response.ok) return;
+      const summary: StatusSummary = await response.json();
+      this.setStatus(summary);
+    } catch {
+      // Silently ignore fetch errors
+    }
   }
 
   clearStatus() {
-    this.div.slideUp().removeClass().addClass("status fixed-top").empty();
+    this.div.classList.remove("minor", "major", "critical");
+    this.div.innerHTML = "";
+    this.div.style.display = "none";
   }
 
   setStatus(statusSummary: StatusSummary) {
     const status = statusSummary.status;
 
-    if (status.indicator == "none") {
+    if (status.indicator === "none") {
       this.clearStatus();
     } else {
-      const updates = statusSummary.incidents.map((incident) => {
+      this.div.classList.remove("minor", "major", "critical");
+      this.div.innerHTML = "";
+
+      statusSummary.incidents.forEach((incident) => {
+        if (incident.incident_updates.length === 0) return;
+
         const latestUpdate = incident.incident_updates[0];
-        const timestamp = moment(latestUpdate.created_at).fromNow();
-        return `<p>${timestamp}: <strong>${latestUpdate.status}</strong> - ${latestUpdate.body}</p>`;
+        const timestamp = relativeTime(latestUpdate.created_at);
+
+        const p = document.createElement("p");
+        const strong = document.createElement("strong");
+        strong.textContent = latestUpdate.status;
+        p.append(`${timestamp}: `, strong, ` - ${latestUpdate.body}`);
+        this.div.appendChild(p);
       });
 
-      this.div.addClass(status.indicator).html(updates.join("\n")).slideDown();
+      this.div.classList.add(status.indicator);
+      this.div.style.display = "block";
     }
   }
 }
 
-$(($) => {
+document.addEventListener("DOMContentLoaded", () => {
   // Legacy ?location= support
-  const match = location.search.match(/\?location=(.*)$/);
-  if (match) {
-    const clock = $('<div class="clock"></div>');
-    clock.append('<div class="time"></div>');
-    clock.append(`<div class="location">${match[1]}</div>`);
-    $(".clocks").append(clock);
+  const locationParam = new URLSearchParams(location.search).get("location");
+  if (locationParam) {
+    const clock = document.createElement("div");
+    clock.className = "clock";
+
+    const timeDiv = document.createElement("div");
+    timeDiv.className = "time";
+
+    const locationDiv = document.createElement("div");
+    locationDiv.className = "location";
+    locationDiv.textContent = locationParam;
+
+    clock.append(timeDiv, locationDiv);
+    document.querySelector(".clocks")?.appendChild(clock);
   }
 
-  for (const clock of Array.from($(".clock"))) {
-    new SituationClock(clock);
-  }
+  document.querySelectorAll(".clock").forEach((clock) => {
+    new SituationClock(clock as HTMLElement);
+  });
 
   new SituationClockResizer();
   new GitHubStatus();

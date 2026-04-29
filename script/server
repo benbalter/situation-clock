@@ -3,4 +3,4 @@ set -e
 
 script/branding
 npm run build
-bundle exec jekyll serve --watch
+npx @11ty/eleventy --serve --watch

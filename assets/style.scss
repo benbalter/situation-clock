@@ -1,9 +1,18 @@
----
----
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
 body {
   background-color: black;
   font-size: 100px;
+  text-align: center;
+  margin: 4px;
+}
+
+.hidden {
+  display: none;
 }
 
 @font-face {
@@ -20,10 +29,15 @@ body {
   font-stretch: extra-expanded;
 }
 
+.clock {
+  margin: 0.5em 0;
+}
+
 .time {
   font-size: 2em;
   color: #f00;
   background-color: #211;
+  padding-top: 0.5em;
 }
 
 .epoch .time {
@@ -35,11 +49,18 @@ body {
   color: #df2;
   background-color: #202910;
   text-transform: uppercase;
+  margin-top: 0.5em;
+  padding-top: 0.5em;
 }
 
 .status {
   font-size: 0.2em;
   color: black;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
 
   p {
     padding: 10px;

@@ -1,8 +1,11 @@
 ---
 clocks:
-  "Washington DC": America/New_York
-  "San Francisco": America/Los_Angeles
-  "EPOCH": EPOCH
+  - name: "Washington DC"
+    timezone: America/New_York
+  - name: "San Francisco"
+    timezone: America/Los_Angeles
+  - name: "EPOCH"
+    timezone: EPOCH
 ---
 
 <!doctype html>
@@ -14,21 +17,18 @@ clocks:
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-    integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-
   <link rel="stylesheet" type="text/css"
-    href="{{ "assets/style.css?v=" | append: site.github.build_revision | relative_url }}">
-  <script src="{{ "assets/script.js?v=" | append: site.github.build_revision | relative_url }}"></script>
+    href="{{ "assets/style.css" | append: "?v=" | append: site.github.build_revision | relative_url }}">
+  <script defer src="{{ "assets/script.js" | append: "?v=" | append: site.github.build_revision | relative_url }}"></script>
 </head>
 
-<body class="text-center m-1">
-  <div class="status fixed-top d-none"></div>
+<body>
+  <div class="status hidden"></div>
   <div class="clocks">
-    {% for clock in page.clocks %}
-    <div class="clock {{ clock[0] | downcase | replace:" ","-" }} my-2 d-none" data-timezone="{{ clock[1] }}">
-      <div class="time pt-2 "></div>
-      <div class="location mt-2 pt-2">{{ clock[0] }}</div>
+    {% for clock in clocks %}
+    <div class="clock {{ clock.name | downcase | replace: " ", "-" }} hidden" data-timezone="{{ clock.timezone }}">
+      <div class="time"></div>
+      <div class="location">{{ clock.name }}</div>
     </div>
     {% endfor %}
   </div>
