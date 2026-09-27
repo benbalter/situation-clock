@@ -10,6 +10,8 @@ on:
       - "*.json"
       - "*.html"
       - "assets/**"
+      - "*.webmanifest"
+      - ".nvmrc"
       - ".github/workflows/build.yml"
 
   workflow_dispatch:
@@ -21,10 +23,6 @@ permissions:
   pages: write
   id-token: write
 
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -34,9 +32,14 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version-file: .nvmrc
+          cache: npm
 
-      - run: npm install
+      - run: npm ci
+
+      - run: npm test
+
+      - run: npm run lint
 
       - run: npm run build
 
@@ -50,6 +53,9 @@ jobs:
     if: github.event_name != 'pull_request'
     needs: build
     runs-on: ubuntu-latest
+    concurrency:
+      group: "pages"
+      cancel-in-progress: false
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
