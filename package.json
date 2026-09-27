@@ -1,17 +1,20 @@
 {
   "name": "situation-clock",
   "version": "1.0.0",
+  "private": true,
   "type": "module",
-  "description": "*LED-style situation room clock formatted for iPads*. **[Live example](https://ben.balter.com/situation-clock/)**",
+  "description": "LED-style situation room clock formatted for iPads",
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
-    "build:css": "sass assets/style.scss assets/style.css --style=compressed --no-source-map",
     "build:js": "vite build",
-    "build:html": "npx @11ty/eleventy",
-    "build": "npm run build:css && npm run build:js && npm run build:html",
+    "build:html": "eleventy",
+    "build": "npm run build:js && npm run build:html",
     "watch": "vite build --watch",
     "test": "tsc --noEmit",
-    "lint": "eslint src/",
-    "lint:fix": "eslint src/ --fix"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "repository": {
     "type": "git",
@@ -25,8 +28,9 @@
   "homepage": "https://github.com/benbalter/situation-clock#readme",
   "devDependencies": {
     "@11ty/eleventy": "^3.1.5",
+    "@eslint/js": "9.39.5",
     "eslint": "^9.39.4",
-    "sass": "^1.99.0",
+    "globals": "17.12.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.59.1",
     "vite": "^8.0.10"

@@ -1,4 +1,3 @@
 _site
 node_modules
-package-lock.json
-assets/style.css
+assets/script.js

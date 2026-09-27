@@ -4,7 +4,7 @@ import { resolve } from "path";
 export default defineConfig({
   build: {
     lib: {
-      entry: resolve(__dirname, "src/script.ts"),
+      entry: resolve(import.meta.dirname, "src/script.ts"),
       name: "SituationClock",
       fileName: "script",
       formats: ["iife"],

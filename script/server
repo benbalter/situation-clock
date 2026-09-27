@@ -2,5 +2,9 @@
 set -e
 
 script/branding
-npm run build
+npm run build:js
+
+# Rebuild the bundle on change while Eleventy serves and live-reloads
+npx vite build --watch &
+trap 'kill $!' EXIT INT TERM
 npx @11ty/eleventy --serve --watch

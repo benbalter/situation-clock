@@ -61,10 +61,10 @@ body {
   left: 0;
   right: 0;
   z-index: 10;
+}
 
-  p {
-    padding: 10px;
-  }
+.status p {
+  padding: 10px;
 }
 
 .status.minor {

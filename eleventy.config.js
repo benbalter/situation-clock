@@ -3,6 +3,10 @@ import { execSync } from "child_process";
 export default function (eleventyConfig) {
   // Passthrough copy for built assets
   eleventyConfig.addPassthroughCopy("assets");
+  eleventyConfig.addPassthroughCopy("manifest.webmanifest");
+
+  // Reload the dev server when Vite rebuilds the (gitignored) bundle
+  eleventyConfig.setServerOptions({ watch: ["assets/script.js"] });
 
   // Ignore source/config files that shouldn't be in the output
   eleventyConfig.ignores.add("*.md");
