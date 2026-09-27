@@ -29,26 +29,36 @@ class SituationClock {
     this.timezone = clock.dataset.timezone ?? "";
     this.time = clock.querySelector(".time") as HTMLElement;
 
-    if (this.timezone === "EPOCH") {
-      setInterval(() => this.updateTimeEpoch(), 1000);
-    } else {
-      this.formatter = new Intl.DateTimeFormat("en-GB", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hourCycle: "h23",
-        timeZone: this.timezone || undefined,
-      });
-      setInterval(() => this.updateTime(), 1000);
+    if (this.timezone !== "EPOCH") {
+      try {
+        this.formatter = new Intl.DateTimeFormat("en-GB", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hourCycle: "h23",
+          timeZone: this.timezone || undefined,
+        });
+      } catch {
+        // Invalid timezone: flag this clock without breaking the others
+        this.setTime("ERR");
+        return;
+      }
     }
+
+    this.tick();
+
+    // Align ticks to the top of each second so minute rollovers are prompt
+    setTimeout(() => {
+      this.tick();
+      setInterval(() => this.tick(), 1000);
+    }, 1000 - (Date.now() % 1000));
   }
 
-  updateTime() {
-    this.setTime(this.formatter!.format(new Date()));
-  }
-
-  updateTimeEpoch() {
-    const time = Math.floor(Date.now() / 1000);
-    this.setTime(time.toString());
+  tick() {
+    if (this.formatter) {
+      this.setTime(this.formatter.format(new Date()));
+    } else {
+      this.setTime(Math.floor(Date.now() / 1000).toString());
+    }
   }
 
   setTime(time: string) {
@@ -60,16 +70,18 @@ class SituationClockResizer {
   constructor() {
     window.addEventListener("resize", () => this.resize());
 
-    setTimeout(() => {
-      document.querySelectorAll(".clock").forEach((el) => {
-        el.classList.remove("hidden");
+    // Size once the LED font has loaded so measurements are accurate. The
+    // clocks are hidden, so explicitly request the font rather than waiting
+    // on document.fonts.ready, which can resolve before it's fetched.
+    document.fonts
+      .load('1em "Ericsson GA628"')
+      .catch(() => [])
+      .then(() => {
+        document.querySelectorAll(".clock").forEach((el) => {
+          el.classList.remove("hidden");
+        });
+        this.resize();
       });
-      this.resize();
-    }, 1000);
-  }
-
-  windowHeight(): number {
-    return window.innerHeight;
   }
 
   clocksHeight(): number {
@@ -77,41 +89,36 @@ class SituationClockResizer {
     return clocks?.clientHeight ?? 0;
   }
 
-  fontSize(): number {
-    return parseFloat(getComputedStyle(document.body).fontSize);
+  setFontSize(size: number) {
+    document.body.style.fontSize = `${size}px`;
   }
 
+  // Binary search for the largest font size that still fits the viewport
   resize() {
-    while (this.tooBig() && this.fontSize() > 1) {
-      document.body.style.fontSize = `${this.fontSize() - 1}px`;
+    let low = 1;
+    let high = Math.max(window.innerHeight, 1);
+
+    while (low < high) {
+      const mid = Math.ceil((low + high) / 2);
+      this.setFontSize(mid);
+      if (this.tooBig()) {
+        high = mid - 1;
+      } else {
+        low = mid;
+      }
     }
 
-    while (this.tooSmall()) {
-      document.body.style.fontSize = `${this.fontSize() + 1}px`;
-    }
-
-    // Step back if the grow loop overshot
-    if (this.tooBig() && this.fontSize() > 1) {
-      document.body.style.fontSize = `${this.fontSize() - 1}px`;
-    }
+    this.setFontSize(low);
   }
 
   tooBig(): boolean {
-    if (this.clocksHeight() > this.windowHeight()) {
+    if (this.clocksHeight() > window.innerHeight) {
       return true;
     }
 
     return Array.from(document.querySelectorAll(".clock")).some(
       (clock) => clock.scrollWidth > window.innerWidth
     );
-  }
-
-  tooSmall(): boolean {
-    if (this.tooBig()) {
-      return false;
-    }
-
-    return this.clocksHeight() < this.windowHeight();
   }
 }
 
@@ -141,12 +148,14 @@ function relativeTime(dateString: string): string {
   return formatter.format(0, "second");
 }
 
-class GitHubStatus {
-  id = "kctbh9vrtdwd";
-  url = `https://${this.id}.statuspage.io/api/v2/summary.json`;
-  div = document.querySelector(".status") as HTMLElement;
+class StatusPage {
+  div: HTMLElement;
+  url: string;
 
-  constructor() {
+  constructor(div: HTMLElement, id: string) {
+    this.div = div;
+    this.url = `https://${id}.statuspage.io/api/v2/summary.json`;
+
     setInterval(() => this.checkStatus(), 60000);
     this.checkStatus();
   }
@@ -162,38 +171,60 @@ class GitHubStatus {
     }
   }
 
-  clearStatus() {
-    this.div.classList.remove("minor", "major", "critical");
-    this.div.innerHTML = "";
-    this.div.style.display = "none";
-  }
-
   setStatus(statusSummary: StatusSummary) {
     const status = statusSummary.status;
 
+    this.div.classList.remove("minor", "major", "critical");
+    this.div.replaceChildren();
+
     if (status.indicator === "none") {
-      this.clearStatus();
-    } else {
-      this.div.classList.remove("minor", "major", "critical");
-      this.div.innerHTML = "";
-
-      statusSummary.incidents.forEach((incident) => {
-        if (incident.incident_updates.length === 0) return;
-
-        const latestUpdate = incident.incident_updates[0];
-        const timestamp = relativeTime(latestUpdate.created_at);
-
-        const p = document.createElement("p");
-        const strong = document.createElement("strong");
-        strong.textContent = latestUpdate.status;
-        p.append(`${timestamp}: `, strong, ` - ${latestUpdate.body}`);
-        this.div.appendChild(p);
-      });
-
-      this.div.classList.add(status.indicator);
-      this.div.style.display = "block";
+      this.div.classList.add("hidden");
+      return;
     }
+
+    statusSummary.incidents.forEach((incident) => {
+      if (incident.incident_updates.length === 0) return;
+
+      const latestUpdate = incident.incident_updates[0];
+      const timestamp = relativeTime(latestUpdate.created_at);
+
+      const p = document.createElement("p");
+      const strong = document.createElement("strong");
+      strong.textContent = latestUpdate.status;
+      p.append(`${timestamp}: `, strong, ` - ${latestUpdate.body}`);
+      this.div.appendChild(p);
+    });
+
+    // Degraded components without an incident still deserve a message
+    if (!this.div.hasChildNodes()) {
+      const p = document.createElement("p");
+      p.textContent = status.description;
+      this.div.appendChild(p);
+    }
+
+    this.div.classList.add(status.indicator);
+    this.div.classList.remove("hidden");
   }
+}
+
+// Keep the screen on while the clock is visible
+function keepAwake() {
+  if (!("wakeLock" in navigator)) return;
+
+  const request = async () => {
+    try {
+      await navigator.wakeLock.request("screen");
+    } catch {
+      // Denied (e.g. low battery); nothing else to do
+    }
+  };
+
+  // The lock is released whenever the page is hidden, so re-acquire it
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") request();
+  });
+
+  request();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -201,7 +232,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const locationParam = new URLSearchParams(location.search).get("location");
   if (locationParam) {
     const clock = document.createElement("div");
-    clock.className = "clock";
+    clock.className = "clock hidden";
 
     const timeDiv = document.createElement("div");
     timeDiv.className = "time";
@@ -219,5 +250,12 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   new SituationClockResizer();
-  new GitHubStatus();
+
+  const statusDiv = document.querySelector<HTMLElement>(".status");
+  const statusPageId = statusDiv?.dataset.statuspage;
+  if (statusDiv && statusPageId) {
+    new StatusPage(statusDiv, statusPageId);
+  }
+
+  keepAwake();
 });

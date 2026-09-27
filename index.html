@@ -6,6 +6,9 @@ clocks:
     timezone: America/Los_Angeles
   - name: "EPOCH"
     timezone: EPOCH
+# Statuspage.io page ID whose incidents are shown as a banner (GitHub's by default).
+# Remove to disable the banner.
+statuspage: kctbh9vrtdwd
 ---
 
 <!doctype html>
@@ -14,8 +17,14 @@ clocks:
 <head>
   <title>Situation Clock</title>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="theme-color" content="#000000">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 
   <link rel="stylesheet" type="text/css"
     href="{{ "assets/style.css" | append: "?v=" | append: site.github.build_revision | relative_url }}">
@@ -23,7 +32,7 @@ clocks:
 </head>
 
 <body>
-  <div class="status hidden"></div>
+  <div class="status hidden"{% if statuspage %} data-statuspage="{{ statuspage }}"{% endif %}></div>
   <div class="clocks">
     {% for clock in clocks %}
     <div class="clock {{ clock.name | downcase | replace: " ", "-" }} hidden" data-timezone="{{ clock.timezone }}">
