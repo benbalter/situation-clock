@@ -2,7 +2,7 @@
 
 *LED-style situation room clock formatted for iPads*. **[Live example](https://ben.balter.com/situation-clock/)**
 
-![situation clock screenshot](https://f.cloud.github.com/assets/282759/1809236/fd9213c8-6dc3-11e3-91f8-18274972e53c.png)
+![situation clock screenshot](docs/screenshot.png)
 
 Forked from [schacon/situation-clock](https://github.com/schacon/situation-clock), which states:
 
@@ -21,7 +21,8 @@ Forked from [schacon/situation-clock](https://github.com/schacon/situation-clock
 * Ability to have multiple clocks per iPad
 * Clock(s) dynamically resize to fill screen
 * App-ified so it can be saved to the iOS home screen
-* Displays GitHub status incidents
+* Displays GitHub status incidents (or any Statuspage.io page)
+* Keeps the screen awake while open (where the Screen Wake Lock API is supported)
 
 ## Usage
 
@@ -33,7 +34,7 @@ Forked from [schacon/situation-clock](https://github.com/schacon/situation-clock
 6. Open the newly created shortcut
 7. (optional) use Velcro or similar to mount to the wall
 
-*Note: You can also pass a URL parameter of `location`, e.g., `?location=ZULU` to set a clock via the URL. The clock will default to the system timezone.*
+*Note: You can also pass a URL parameter of `location`, e.g., `?location=ZULU`, to add an extra clock via the URL. It uses the system timezone.*
 
 ## Adding/modifying a clock
 
@@ -48,14 +49,26 @@ clocks:
     timezone: America/Los_Angeles
   - name: "EPOCH"
     timezone: EPOCH
+statuspage: kctbh9vrtdwd
 ---
 ```
 
+* `timezone` is any [IANA timezone name](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones), or `EPOCH` for Unix time. An unrecognized timezone displays `ERR` for that clock.
+* `statuspage` is the [Statuspage.io](https://www.atlassian.com/software/statuspage) page ID whose incidents are shown as a banner. The default is GitHub's. Remove the key to disable the banner.
+
 ## Developing
 
+Requires Node.js (see `.nvmrc`). The site is built with [Eleventy](https://www.11ty.dev/); `src/script.ts` is bundled by [Vite](https://vite.dev/) into `assets/script.js`.
+
 1. Establish your development environment by running `script/bootstrap`
-2. Spin up a local version by running `script/server`
+2. Spin up a local version by running `script/server` (rebuilds and reloads on change)
 3. Visit [localhost:8080](http://localhost:8080) in your favorite browser
+
+Other useful commands:
+
+* `npm test`: type-check
+* `npm run lint`: lint
+* `npm run build`: build the site into `_site/`
 
 ## Contributing
 
